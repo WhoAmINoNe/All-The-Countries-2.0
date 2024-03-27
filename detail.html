@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Detail Of</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="btn btn-primary my-3">Back</a>
+        <table id="table" class="table border table-striped text-uppercase"></table>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search)
+        const country = urlParams.get('country')
+        document.title += " " + country
+        const table = document.querySelector("#table")
+
+        fetch(`https://restcountries.com/v3.1/name/${country}`)
+        .then((res) => res.json())
+        .then(res => putCountry(res[0]))
+        .catch((err) => console.log(err))
+
+        function putCountry (obj) {
+            let currenciesCode = Object.keys(obj.currencies)
+            let lat = obj.latlng[0]
+            let lng = obj.latlng[1]
+
+            table.innerHTML = `
+            <tr>
+                <th style="white-space: nowrap;">Name</th>
+                <td style="white-space: nowrap;">${obj?.name.common}</td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">Capital</th>
+                <td style="white-space: nowrap;">${obj?.capital}</td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">Area</th>
+                <td style="white-space: nowrap;">${obj?.area} (km)<sup>2</sup></td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">Continent</th>
+                <td style="white-space: nowrap;">${obj?.continents}</td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">Region</th>
+                <td style="white-space: nowrap;">${obj?.region}</td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">Subregion</th>
+                <td style="white-space: nowrap;">${obj?.subregion}</td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">currencies</th>
+                <td style="white-space: nowrap;">${obj?.currencies[currenciesCode].name}</td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">flags</th>
+                <td style="white-space: nowrap;">
+                    <img src="${obj?.flags.svg}" alt="" class="img-thumbnail" width="300" height="300"/>    
+                </td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">Coat Of Arms</th>
+                <td style="white-space: nowrap;">
+                    <img src="${obj?.coatOfArms.svg}" alt="" class="img-thumbnail" width="300" height="300"/>    
+                </td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">Independent</th>
+                <td style="white-space: nowrap;">${obj?.independent ? "Yes" : "No"}</td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">Start Of Week</th>
+                <td style="white-space: nowrap;">${obj?.startOfWeek}</td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">population</th>
+                <td style="white-space: nowrap;">${obj?.population}</td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">Time Zone</th>
+                <td style="white-space: nowrap;">${obj?.timezones}</td>
+            </tr>
+            <tr>
+                <th style="white-space: nowrap;">Map</th>
+                <td style="white-space: nowrap;">
+                    <iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed.html?bbox=${lat}, ${lng}, ${lng}, ${lat}&amp;layer=mapnik&amp;marker=${lat}, ${lng}" style="border: 1px solid black"></iframe><br/><small><a href="https://www.openstreetmap.org/?mlat=15.231&amp;mlon=38.496#map=7/15.231/38.496">Посмотреть более крупную карту</a></small>                </td>
+            </tr>
+            `
+        }
+    </script>
+</body>
+</html>
